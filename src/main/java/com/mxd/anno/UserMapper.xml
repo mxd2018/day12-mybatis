@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mxd.anno.UserMapper">
+	<resultMap type="User" id="baseResultMap">
+		<id property="id" column="ID"/>
+		<result property="name" column="NAME"/>
+		<result property="password" column="PASSWORD"/>
+		<association property="addr" column="UID" javaType="com.mxd.pojo.po.Address">
+			<id property="id" column="ID"/>
+			<result property="name" column="ADDR"/>
+		</association>
+	</resultMap>
+</mapper>

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--这里映射的是接口，namespace是接口的权限定名 ，权限定名是用点连接的，文件路径才用/ -->
+<mapper namespace="com.mxd.dao.IUserDao">
+	<!-- 动态sql -->
+	<!-- if标签 -->
+	<select id="selectByItem" parameterType="User" resultType="User">
+		select * from user where 1=1
+		<if test="name!=null and name!=''">
+			and name=#{name}
+		</if>
+		<if test="password!=null and password!=''">
+			and password=#{password}
+		</if>
+	</select>
+	
+	<!-- where标签 -->
+	<select id="selectByItem2" parameterType="User" resultType="User">
+		select * from user
+		<where>
+			<if test="name!=null and name!=''">
+				and name=#{name}
+			</if>
+			<if test="password!=null and password!=''">
+				and password=#{password}
+			</if>
+		</where>	
+	</select>
+	
+	<!-- choose when otherwise  类似于java中的switch -->
+	<select id="selectByItem3" parameterType="User" resultType="User">
+		select * from user
+		<!-- 注意：where在choose前面 -->
+		<where>
+			<choose>
+				<when test="name!=null and name!=''">
+					and name=#{name}
+				</when>
+				
+				<when test="password!=null and password!=''">
+					and password=#{password}
+				</when>	
+		<!-- otherwise标签可以不写 -->
+				<!-- <otherwise>
+					and 1=1
+				</otherwise> -->
+			</choose>
+		</where>
+	</select>
+	
+	<!-- trim标签，前缀替换指定字符 或替换后缀字符 -->
+	<select id="selectByItem4" parameterType="User" resultType="User">
+		select * from user
+		<trim prefix="where" prefixOverrides="and|or">
+			<if test="name!=null and name!=''">
+				and name=#{name}
+			</if>
+			<if test="password!=null and password!=''">
+				and password=#{password}
+			</if>
+		</trim>
+	</select>
+	
+	<!-- set标签,
+		 * 注意：
+		 * 1.什么也不修改会报异常，没有update user的语句
+		 * 2.好处：当只修改一个字段时，其它字段还是原来的数据，不会变为null
+		 *  	   解决了修改最后一个字段后不需要逗号的问题 
+	-->
+	<select id="setByItem" parameterType="User" resultType="User">
+		update user
+		<set>
+			<if test="name!=null and name!=''">
+				name=#{name},
+			</if>
+			<if test="password!=null and password!=''">
+				password=#{password},
+			</if>
+		</set>
+		where id=#{id}
+	</select>
+	
+	<!-- foreach标签 -->
+	<select id="selectByArray" parameterType="Object[]" resultType="User">
+		select * from user where id in 
+		<foreach collection="array" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</select>
+	
+	<!-- foreach标签使用user类传递数组 -->
+	<select id="selectByArray2" parameterType="User" resultType="User">
+		select * from user where id in 
+		<foreach collection="ids" item="id" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</select>
+	
+</mapper> 
